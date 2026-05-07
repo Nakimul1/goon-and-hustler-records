@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    
+    // Phase 4: Entities
+    match /subscribers/{subscriberId} {
+      allow create: if (
+        isValidId(subscriberId) &&
+        isValidSubscriber(incoming())
+      );
+      
+      // No reading, updating, or deleting from the client for security
+      allow read, update, delete: if false;
+    }
+
+    function isValidSubscriber(data) {
+      return data.keys().hasAll(['email', 'createdAt']) 
+        && data.keys().size() == 2
+        && data.email is string 
+        && data.email.size() <= 254
+        && data.email.matches('^[^@]+@[^@]+\\.[^@]+$') // Basic email regex
+        && data.createdAt == request.time;
+    }
+  }
+}
