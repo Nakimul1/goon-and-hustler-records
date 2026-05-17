@@ -1,27 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", sans-serif;
+}
 
-  --color-gold-dust: #C5A059;
-  --color-sunset-warm: #F27D26;
-  --color-urban-black: #0A0A0A;
-  --color-kibera-warmth: #E6D5B8;
+:root {
+  --bg-color: #0c0d10;
+  --panel-bg: rgba(21, 23, 28, 0.85);
+  --accent: #2dd4bf;
+  --accent-glow: rgba(45, 212, 191, 0.3);
 }
 
 @layer base {
   body {
-    @apply bg-urban-black text-white antialiased;
+    @apply bg-[#0c0d10] text-zinc-100 antialiased selection:bg-teal-500/30 font-sans min-h-screen;
+    overflow-x: hidden;
   }
 }
 
-.cinematic-mask {
-  mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+/* Custom Scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
 }
 
-.text-shadow-glow {
-  text-shadow: 0 0 20px rgba(242, 125, 38, 0.4);
+.canvas-container {
+  aspect-ratio: 16/9;
+}
+
+.glass-panel {
+  @apply bg-zinc-900/60 backdrop-blur-xl border border-white/5;
+}
+
+.mono-label {
+  @apply font-mono text-[10px] uppercase tracking-widest text-zinc-500;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, rgba(45, 212, 191, 0.02), transparent);
+  pointer-events: none;
+  z-index: 100;
+  animation: scanline 8s linear infinite;
 }
